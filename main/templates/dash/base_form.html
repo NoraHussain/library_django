@@ -1,0 +1,38 @@
+{% extends "dash/base.html" %}
+
+{% block content %}
+<div class="container">
+                <div class="">
+                    <h2 class="mb-5"> Create New Book</h2>
+                </div>
+
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                        <div class="mb-3 form-group {% if field.field.required %}required{% endif %}">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'books' %}" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                Create
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'dash/base.html' %} {% load custom_filter %} {% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h1>{{ title }}</h1>
+    </div>
+    <div class="col-md-6">
+      <a href="{{ add_url }}" class="btn btn-primary">Add New</a>
+    </div>
+  </div>
+  <table class="table">
+    <thead>
+      {% for column in columns %}
+      <th>{{ column }}</th>
+      {% endfor %}
+      <th>Actions</th>
+    </thead>
+    <tbody>
+      {% for object in objects %}
+      <tr>
+        {% for column in columns %}
+        <td>{{ object|attr:column }}</td>
+        {% endfor %}
+        <td>
+          <a href="{% url detail_url object.id %}" class="btn btn-sm btn-primary">Detail</a>
+          <a href="{% url update_url object.id %}" class="btn btn-sm btn-primary">Update</a>
+          <a href="{% url delete_url object.id %}" class="btn btn-sm btn-danger">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% endblock %}
+</div>

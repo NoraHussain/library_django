@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}{{ book.title }}{% endblock %}
+{% block content %}
+
+<section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col lg:flex-row gap-8">
+        
+        <!-- Book Info -->
+        <div class="lg:w-2/3 space-y-4">
+            <h2 class="text-3xl font-bold text-gray-800">{{ book.title }}</h2>
+            <p class="text-gray-600"><span class="font-semibold">Author:</span> {{ book.author.name }}</p>
+            <p class="text-gray-600"><span class="font-semibold">Publication Date:</span> {{ book.publication_date }}</p>
+            <p class="text-gray-700 mt-4">{{ book.description }}</p>
+        </div>
+
+        <!-- Book Cover -->
+        <div class="lg:w-1/3 flex justify-center lg:justify-end">
+            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="rounded-lg shadow-md max-h-96 object-cover">
+        </div>
+    </div>
+</section>
+
+{% endblock %}

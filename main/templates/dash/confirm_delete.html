@@ -1,0 +1,10 @@
+{% extends "dash/base.html" %}
+{% block content %}
+    <h2>Confirm Delete</h2>
+    <p>Are you sure you want to delete {{ object }}?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="{% url 'books' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+{% endblock %}

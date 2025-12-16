@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Book Details</h2>
+
+    <div>
+        <a href="{% url 'book_edit' book.pk %}" class="btn btn-info btn-sm">
+            ✏️ Edit
+        </a>
+        <a href="{% url 'book_delete' book.pk %}" class="btn btn-danger btn-sm">
+            🗑 Delete
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h4 class="card-title">{{ book.title }}</h4>
+        <table class="table table-borderless mt-3">
+            <tr>
+                <th class="text-muted" style="width: 150px;">Title</th>
+                <td>{{ book.title }}</td>
+            </tr>
+
+            <tr>
+                <th class="text-muted">Author</th>
+                <td>{{ book.author }}</td>
+            </tr>
+
+            <tr>
+                <th class="text-muted">Price</th>
+                <td>{{ book.price }}</td>
+            </tr>
+
+            <tr>
+                <th class="text-muted">Created At</th>
+                <td>{{ book.created_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+
+            <tr>
+                <th class="text-muted">Updated At</th>
+                <td>{{ book.updated_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+<a href="{% url 'books' %}" class="btn btn-secondary mt-3">⬅ Back to Books</a>
+
+{% endblock %}

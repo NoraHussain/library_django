@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 space-y-6">
+
+        <!-- Category Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:gap-6">
+            <img 
+                src="{{ category.icon.url }}" 
+                alt="{{ category.name }}" 
+                class="w-24 h-24 object-cover rounded-full"
+            />
+            <h2 class="text-3xl font-bold mt-4 md:mt-0">{{ category.name }}</h2>
+        </div>
+
+        <!-- Category Description -->
+        <p class="text-gray-700">{{ category.description }}</p>
+
+        <!-- Books Grid -->
+        <h3 class="text-2xl font-semibold mt-6 mb-4">Books in this category</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for book in category.books.all %}
+            <div>
+                {% include 'book_card.html' with book=book %}
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

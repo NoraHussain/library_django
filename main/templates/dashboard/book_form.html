@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="m-3">
+{% if view.object.pk %}
+    <h2>Edit Book: {{ view.object.title }}</h2>
+{% else %}
+    <h2>Add Book</h2>
+{% endif %}
+{% if view.object.pk %}
+    <p>Current Image:</p>
+    <img src="{{ view.object.cover_image.url }}" alt="{{ view.object.title }}" style="max-width: 200px;">
+{% endif %}
+
+<form method="post" 
+enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+
+    <button 
+    class="btn btn-success">
+    Save</button>
+</form>
+
+<a href="{% url 'books' %}" class="btn btn-secondary mt-3">Back</a>
+</section>
+{% endblock %}

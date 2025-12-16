@@ -1,0 +1,22 @@
+<div class="bg-black text-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300 h-full flex flex-col">
+    
+    <!-- Book Cover -->
+    <a href="{% url 'one_book' book.id %}" class="block">
+        <div class="overflow-hidden">
+            <img 
+                src="{{ book.cover_image.url }}" 
+                alt="{{ book.title }}" 
+                class="w-full h-64 object-cover transform hover:scale-105 transition duration-300"
+            />
+        </div>
+    </a>
+
+    <!-- Book Info -->
+    <div class="p-4 flex-1 flex flex-col justify-between">
+        <div>
+            <h5 class="text-lg font-bold mb-1 truncate">{{ book.title }}</h5>
+            <p class="text-gray-300 mb-1">{{ book.author.name }}</p>
+            <p class="text-gray-400 text-sm">{{ book.num_copies }} available</p>
+        </div>
+    </div>
+</div>
