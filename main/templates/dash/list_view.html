@@ -1,19 +1,32 @@
-{% extends 'dash/base.html' %} {% load custom_filter %} {% block content %}
+{% extends 'dash/base.html' %}
+{% load custom_filter %}
+{% block content %}
 <div class="container">
-  <div class="row">
+  <div class="row mb-3">
     <div class="col-md-6">
       <h1>{{ title }}</h1>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 text-end">
       <a href="{{ add_url }}" class="btn btn-primary">Add New</a>
     </div>
   </div>
-  <table class="table">
+
+  <table id="datatable" class="table table-striped table-bordered">
     <thead>
-      {% for column in columns %}
-      <th>{{ column }}</th>
-      {% endfor %}
-      <th>Actions</th>
+      <tr>
+        {% for column in columns %}
+        <th>{{ column }}</th>
+        {% endfor %}
+        <th>Actions</th>
+      </tr>
+
+      <!-- FILTER ROW -->
+      <tr>
+        {% for column in columns %}
+        <th><input type="text" class="form-control form-control-sm" placeholder="Search {{ column }}"></th>
+        {% endfor %}
+        <th></th>
+      </tr>
     </thead>
     <tbody>
       {% for object in objects %}
@@ -30,6 +43,37 @@
       {% endfor %}
     </tbody>
   </table>
-
-  {% endblock %}
 </div>
+
+<!-- JS & DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"/>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(document).ready(function () {
+  var table = $('#datatable').DataTable({
+    orderCellsTop: true,
+    fixedHeader: true,
+    pageLength: 10,
+    responsive: true,
+    columnDefs: [
+      { orderable: false, targets: -1 }  // Disable sorting on actions column
+    ]
+  });
+
+  // Apply the search
+  $('#datatable thead tr:eq(1) th').each(function (i) {
+    $('input', this).on('keyup change', function () {
+      if (table.column(i).search() !== this.value) {
+        table
+          .column(i)
+          .search(this.value)
+          .draw();
+      }
+    });
+  });
+});
+</script>
+
+{% endblock %}

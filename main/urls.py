@@ -37,4 +37,5 @@ urlpatterns = [
     path('dash/categories/<int:pk>/', views.CategoryDetailView.as_view(), name='category_detail'),
     path('dash/authors/<int:pk>/', views.AuthorDetailView.as_view(), name='author_detail'),
 
+
 ]

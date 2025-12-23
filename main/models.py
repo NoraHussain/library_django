@@ -1,4 +1,7 @@
+from django.contrib.auth.decorators import permission_required
 from django.db import models
+from guardian.shortcuts import assign_perm
+
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
@@ -22,9 +25,16 @@ class Book (models.Model):
     category = models.ManyToManyField(Category, related_name='books')
     publication_date = models.DateField(null=True, blank=True)
     isbn = models.CharField(max_length=13, unique=True, null=True, blank=True)
+    is_published = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
+    
+    class Meta:
+        ordering = ['title']
+        permissions = [
+            ("can_publish_book", "Can publish book"),
+        ]
 
 class BookCopy(models.Model):
     unique_id = models.CharField(max_length=100, unique=True)

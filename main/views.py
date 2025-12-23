@@ -1,3 +1,4 @@
+import re
 from typing import Any
 
 from django.shortcuts import render
@@ -14,6 +15,10 @@ from django.views.generic import (
     CreateView, UpdateView, TemplateView, DeleteView
 )
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
+from guardian.shortcuts import assign_perm, get_objects_for_user
+
 
 
 # def home (request):
@@ -35,6 +40,7 @@ class AboutPageView (TemplateView):
 
 class HomePageView (TemplateView):
     template_name = 'index.html'
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -179,6 +185,15 @@ class ListViewGeneric (ListView):
     update_url = None
     delete_url = None
     detail_url = None
+    # permission_required = None
+    show_add_button = False
+
+    def get_queryset(self):
+        return get_objects_for_user(
+            self.request.user,
+            self.permission_required,
+            self.model
+        )
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -190,8 +205,6 @@ class ListViewGeneric (ListView):
         context['detail_url'] = self.detail_url
         return context
 
-    def get_queryset(self):
-        return self.model.objects.all()
 
 class BooksListView (ListViewGeneric):
     model = Book
@@ -201,6 +214,21 @@ class BooksListView (ListViewGeneric):
     update_url = ("update_book")
     delete_url = ("delete_book")
     detail_url = ("book_detail")
+    permission_required = "main.view_book"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["show_add_button"] = self.request.user.has_perm(
+            "main.add_category"
+        )
+        return context
+
+    def get_queryset(self):
+        return get_objects_for_user(
+            self.request.user,
+            "main.view_book",
+            Book
+        )
 
 class CategoryListView(ListViewGeneric):
     model = Category
@@ -209,7 +237,8 @@ class CategoryListView(ListViewGeneric):
     add_url = reverse_lazy("add_category")
     update_url = ("update_category")
     delete_url = ("delete_category")
-    detail_url = ("category_detail")    
+    detail_url = ("category_detail")
+    permission_required = "main.can_view_category"
 
 class AuthorListView(ListViewGeneric):
     model = Author
@@ -219,14 +248,23 @@ class AuthorListView(ListViewGeneric):
     update_url = ("update_author") 
     delete_url = ("delete_author")
     detail_url = ("author_detail")
+    permission_required = "main.can_view_author"
 
-class AddBookView(CreateView):
+class AddBookView(PermissionRequiredMixin, CreateView):
     model = Book
     fields = ["title", "description", "author",
                "category", "publication_date",
                  "isbn", "cover_image"]
     template_name = "dash/base_form.html"
     success_url = reverse_lazy("books")
+    permission_required = "main.add_book"
+
+    def form_valid(self, form):
+        response = super().form_valid(form) # save 
+        assign_perm('view_book', self.request.user, self.object)
+        assign_perm('change_book', self.request.user, self.object)
+        assign_perm('delete_book', self.request.user, self.object)
+        return response
 
 class AddCategoryView(CreateView):
     model = Category
@@ -246,6 +284,12 @@ class UpdateBookView(UpdateView):
               "publication_date", "isbn", "cover_image"]
     template_name = "dash/base_form.html"
     success_url = reverse_lazy("books")
+    
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if not self.request.user.has_perm('change_book', obj):
+            raise PermissionDenied
+        return obj
 
 class UpdateCategoryView(UpdateView):
     model = Category
@@ -281,7 +325,14 @@ class DetailViewGeneric (DetailView):
     list_url = None
     update_url = None
     delete_url = None
-    
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if not self.request.user.has_perm(f'view_{self.model.__name__.lower()}', obj):
+            raise Http404(f"You do not have permission to view this {self.model.__name__.lower()}.")
+        else:
+            return obj
+   
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
