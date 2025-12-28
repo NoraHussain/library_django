@@ -50,3 +50,8 @@ form input, form select, form textarea {
     border: 1px solid #ced4da;
     border-radius: 4px;
 }
+
+.myform input{
+    border: 1px solid green;
+    margin-bottom: 10px;
+}

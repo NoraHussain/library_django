@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Contact{% endblock %}
+{% block content %}
+{% comment %} <section class="mx-auto max-w-md">
+    <h1>Contact Us</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Send</button>
+    </form>
+</section> {% endcomment %}
+
+<section class="mx-auto max-w-md">
+    <h1>Contact Us</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="mb-4">
+            <p class="text-sm font-medium text-gray-700">
+                {{ field.label_tag }} 
+                {{ field.as_widget }} 
+            </p>
+            <p class="text-sm text-gray-500">{{ field.help_text }}</p>
+            <p style="color:red;"> {{ field.errors.as_text }}</p>
+        </div>
+        {% endfor %}
+
+        <div style="color:orange;">
+            {{form.non_field_errors}}
+        </div>
+        <div class="flex justify-end">
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md" type="submit">Send</button>
+        </div>
+    </form>
+</section> 
+{% endblock %}

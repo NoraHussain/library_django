@@ -7,12 +7,12 @@ from main.models import Book, Category, Author, Borrowing
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import redirect
-from .forms import LoginForm
+from .forms import LoginForm, ContactForm
 from django.core.paginator import Paginator
 from django.db.models import Sum, Count
 from django.views.generic import (
     ListView, DetailView,
-    CreateView, UpdateView, TemplateView, DeleteView
+    CreateView, UpdateView, TemplateView, DeleteView, FormView
 )
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -36,7 +36,14 @@ from guardian.shortcuts import assign_perm, get_objects_for_user
 class AboutPageView (TemplateView):
     template_name = 'about.html'
 
+class ContactView(FormView):
+    template_name = "contact.html"
+    form_class = ContactForm
+    success_url = "/"
 
+    def form_valid(self, form):
+        form.process()
+        return super().form_valid(form)
 
 class HomePageView (TemplateView):
     template_name = 'index.html'

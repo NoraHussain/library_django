@@ -26,6 +26,7 @@ class Book (models.Model):
     publication_date = models.DateField(null=True, blank=True)
     isbn = models.CharField(max_length=13, unique=True, null=True, blank=True)
     is_published = models.BooleanField(default=False)
+    digital_book = models.FileField(upload_to='digital_books/', null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -55,3 +56,4 @@ class Borrowing(models.Model):
     actual_return_date = models.DateField(null=True, blank=True)
     is_returned = models.BooleanField(default=False)
     penalty = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    
